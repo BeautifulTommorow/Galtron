@@ -9,6 +9,7 @@ import mainMenu as mm  # Main menu
 import levelMenu as lm  # select game level(hard/easy)
 import playMenu as pm  # choosing ship color
 import settingsMenu as sm
+import speedMenu as spm
 import twoPlayer as tp  # two player mode
 import sounds
 from animations import Explosions
@@ -21,6 +22,97 @@ from settings import Settings
 from ship import Ship
 
 def runGame():
+<<<<<<< HEAD
+	#Initialize game and create a window
+	pg.init()
+	#create a new object using the settings class
+	setting = Settings()
+	#creaete a new object from pygame display
+	screen = pg.display.set_mode((setting.screenWidth, setting.screenHeight))
+	#set window caption using settings obj
+	pg.display.set_caption(setting.windowCaption)
+
+	playBtn = Button(setting, screen, "PLAY", 200)
+	menuBtn = Button(setting, screen, "MENU", 250)
+	twoPlayBtn = Button(setting, screen, "2PVS", 250)
+	#setBtnbtn = Button(setting, screen, "SETTING", 300)
+	aboutBtn = Button(setting, screen, "ABOUT", 300)
+	quitBtn = Button(setting, screen, "QUIT", 400)
+	greyBtn = Button(setting, screen, "GREY", 200)
+	redBtn = Button(setting, screen, "RED", 250)
+	blueBtn = Button(setting, screen, "BLUE", 300)
+	#make slector for buttons
+	sel = Selector(setting, screen)
+	sel.rect.x = playBtn.rect.x + playBtn.width + 10
+	sel.rect.centery = playBtn.rect.centery
+
+	#Create an instance to stor game stats
+	stats = GameStats(setting)
+	sb = Scoreboard(setting, screen, stats)
+
+	#Make a ship
+	ship = Ship(setting, screen)
+	#Ships for two player
+	ship1 = Ship(setting, screen)
+	ship2 = Ship(setting, screen)
+
+	#make a group of bullets to store
+	bullets = Group()
+	eBullets = Group()
+	setting.explosions = Explosions()
+
+	#Make an alien
+	aliens = Group()
+	gf.createFleet(setting, screen, ship, aliens)
+	pg.display.set_icon(pg.transform.scale(ship.image, (32, 32)))
+
+	#plays bgm
+	pg.mixer.music.load("sound_bgms/galtron.mp3")
+	pg.mixer.music.set_volume(0.25)
+	pg.mixer.music.play(-1)
+
+	runGame = True
+
+	#Set the two while loops to start mainMenu first
+	while runGame:
+		#Set to true to run main game loop
+		while stats.mainMenu:
+			mm.checkEvents(setting, screen, stats, sb, playBtn, twoPlayBtn, aboutBtn, quitBtn, menuBtn, sel, ship, aliens, bullets, eBullets)
+			mm.drawMenu(setting, screen, sb, playBtn, menuBtn, twoPlayBtn, aboutBtn, quitBtn, sel)
+		while stats.playMenu:
+			pm.checkEvents(setting, screen, stats, sb, playBtn, greyBtn, redBtn, blueBtn, quitBtn, menuBtn, sel, ship, aliens, bullets, eBullets)
+			pm.drawMenu(setting, screen, sb, greyBtn, redBtn, blueBtn, menuBtn, quitBtn, sel)
+
+		while stats.mainGame:
+			#Game functions
+			gf.checkEvents(setting, screen, stats, sb, playBtn, quitBtn, sel, ship, aliens, bullets, eBullets) #Check for events
+
+			if stats.gameActive:
+				gf.updateAliens(setting, stats, sb, screen, ship, aliens, bullets, eBullets) #Update aliens
+				gf.updateBullets(setting, screen, stats, sb, ship, aliens, bullets, eBullets) #Update collisions
+				ship.update(bullets,aliens) #update the ship
+			 #Update the screen
+			gf.updateScreen(setting, screen, stats, sb, ship, aliens, bullets, eBullets, playBtn, menuBtn, quitBtn, sel)
+		while stats.mainAbout:
+			About.checkEvents(setting, screen, stats, sb, playBtn, quitBtn, menuBtn, sel, ship, aliens, bullets, eBullets)
+			About.drawMenu(setting, screen, sb, menuBtn, quitBtn, sel)
+
+		while stats.twoPlayer:
+			tp.checkEvents(setting, screen, stats, sb, playBtn, quitBtn, sel, ship1, ship2, aliens, bullets, eBullets)
+			if stats.gameActive:
+				ship1.update(bullets)
+				ship2.update(bullets)
+#				tp.updateBullets(setting, screen, stats, ship1, ship2, bullets, eBullets)
+#			tp.updateScreen(setting, screen, stats, bullets, eBullets, playBtn, menuBtn, quitBtn, sel, ship1, ship2)
+		while stats.mainGame:
+			if runGame == True:
+				print("test")
+
+#init bgm mixer
+pg.mixer.pre_init(44100,16,2,4096)
+pg.mixer.init(44100,-16,2,4096)
+#run the runGame method to run the game
+=======
     # Initialize game and create a window
     pg.init()
     # create a new object using the settings class
@@ -36,7 +128,7 @@ def runGame():
 
     bMenu = ButtonMenu(screen)
     bMenu.addButton("play", "PLAY")
-    bMenu.addButton("menu", "MENU")
+    bMenu.addButton("menu", "BACK")
     bMenu.addButton("twoPlay", "2PVS")
     bMenu.addButton("settings", "SETTINGS")
     bMenu.addButton("invert", "INVERT")
@@ -48,14 +140,34 @@ def runGame():
     bMenu.addButton("retry", "RETRY")
     bMenu.addButton("hard", "HARD")
     bMenu.addButton("normal", "NORMAL")
-
+    bMenu.addButton("back", "MENU")
+    bMenu.addButton("speed setting","SPEED")
+    bMenu.addButton("fast","FAST")
+    bMenu.addButton("middle","MIDDLE")
+    bMenu.addButton("slow","SLOW")
+<<<<<<< HEAD
+    bMenu.addButton("sound","SOUND")
+    bMenu.addButton("loud","LOUD")
+    bMenu.addButton("low","LOW")
+=======
+    
+>>>>>>> 78ecfa2143bfd3ecfc66c1265fc3edf149138738
     mainMenuButtons = ["play", "about", "settings", "quit"] # delete "twoPlay"
     playMenuButtons = ["grey", "red", "blue", "menu", "quit"]
-    levelMenuButtons = ["hard", "normal", "quit"]
+    levelMenuButtons = ["hard", "normal", "back", "quit"]
+
     mainGameButtons = ["play", "menu", "quit"]
     aboutButtons = ["menu", "quit"]
-    settingsMenuButtons = ["menu", "invert", "quit"]
-
+<<<<<<< HEAD
+    settingsMenuButtons = ["menu", "invert","speed setting","sound","quit"]
+    speedButtons = ["fast","middle","slow","menu"]
+                
+    soundButtons =["loud","low","menu"]
+=======
+    settingsMenuButtons = ["menu", "invert","speed setting","quit"]
+    speedButtons = ["fast","middle","slow"]
+>>>>>>> 78ecfa2143bfd3ecfc66c1265fc3edf149138738
+    
     bgManager = BackgroundManager(screen)
     bgManager.setFillColor((0, 0, 0))
     bgManager.addBackground("universe_1", "gfx/backgrounds/stars_back.png", 0, 1)
@@ -172,6 +284,11 @@ def runGame():
             sm.checkEvents1(setting, screen, stats, sb, bMenu, ship, aliens, bullets, eBullets)
             sm.drawMenu(setting, screen, sb, bMenu)
 
+        bMenu.setMenuButtons(speedButtons)
+        while stats.speedMenu:
+            spm.checkEvents(setting, screen, stats, sb, bMenu, ship, aliens, bullets, eBullets)
+            spm.drawMenu(setting, screen, sb, bMenu)
+
         while stats.mainGame:
             if rungame == True:
                 print("test")
@@ -182,4 +299,5 @@ pg.mixer.pre_init(44100, 16, 2, 4096)
 pg.mixer.init(44100, -16, 2, 4096)
 # run the runGame method to run the game
 
+>>>>>>> 680715a2841b571424a13107d9077d9d96c2738e
 runGame()
